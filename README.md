@@ -14,6 +14,14 @@ xB is the hub. Six nodes on a hexagon, spokes routing inward, a soft orb behind,
 | `xb_clean_dark.svg` | Minimal version. Ring + nodes + orb + white xB, no inner spokes. Transparent. Calm contexts and the base for small sizes. |
 | `xb_on_light.svg` | Light-mode sibling. White tile, dark-green network, white xB with a subtle dark edge so it holds on white. |
 | `xb_on_surface_light.svg` | Light sibling with no tile, for sitting directly on a tinted or off-white surface. Dark-green network, solid `#0B3B35` xB. What the app header uses. |
+| `xb_on_black.svg` | Dark artwork on a full-bleed `#000000` square. Opaque, no rounding. For anywhere that will not honour transparency. |
+| `xb_on_white.svg` | Light artwork on a full-bleed `#FFFFFF` square. Opaque, no rounding. The sibling of the above. |
+
+PNG exports of every variant live in `/logos/png` at 512px, rendered with Space Grotesk actually installed.
+
+**On the two `_on_black` / `_on_white` files, and why `xb_on_light` is not the same thing.** `xb_on_light.svg` is an app-icon shape: a *rounded* tile (`rx="22"`) in off-white `#F4F7F6`. The two new files are full-bleed, square-cornered, and pure black and pure white. Reach for those when something will not honour an alpha channel and will invent its own background, which is how a transparent mark ends up looking deliberate on one client and broken on the next. Same failure that made the old share card wrong.
+
+Neither file changes the mark. Each takes the artwork verbatim from an existing variant, `xb_primary_dark` for black and `xb_on_surface_light` for white, and adds a ground rect. Verified by comparing the drawing primitives, not by eye.
 
 SVG is the master format — scalable, use it wherever possible.
 
