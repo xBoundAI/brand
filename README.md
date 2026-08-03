@@ -54,6 +54,33 @@ Two things came out of it worth keeping:
 - **The global git identity is now set**, which is where the bug actually lived. Every repo here had a per-repo identity, so only a brand new clone could hit it.
 - **A force push unlinks a commit, it does not delete it.** The old SHA stayed fetchable from GitHub afterward. On a public repo, purging it takes a support request. Assume anything pushed is public permanently and fix the cause instead.
 
+## Icons (`/icons`)
+
+The favicon and touch icon set for every xBound surface, and the only copy of the
+generator that makes them. Run `node icons/generate.cjs`, then `npm run icons` in
+`xbound-site` and in `xbound` to pull the five files into each `public/`.
+
+It is a solid teal chip with the monogram knocked out, not the mark. That is
+deliberate and it took four attempts to land, all verified by rendering
+candidates over the real tab greys (`#35363A` dark, `#DEE1E6` light):
+
+| candidate | dark tab bar | light tab bar |
+|---|---|---|
+| transparent, near-white letters | good | **invisible** |
+| transparent, teal letters | ok | weak |
+| opaque black tile | reads as a hole | fine |
+| **solid teal tile** | **strong** | **strong** |
+
+Teal is mid-value and high chroma, so it stands off both and reads as an object
+rather than as absence. It needs no `prefers-color-scheme` variant, so there is
+one artwork and one appearance everywhere. **At tab size the brand colour is the
+recogniser, not the geometry**, which is also why the nodes and the orb are
+absent: nobody resolves a hexagon at 16px, and teal nodes on a teal tile vanish.
+The full mark stays on the 180px touch icon, where there is room for it.
+
+The reasoning for all four attempts is in the generator header. Read it before
+changing the icon, so the same three wrong turns do not get taken again.
+
 ## Rasterizing
 
 SVG is the master. If you export PNGs, install Space Grotesk first or the wordmark and the `xB` monogram both silently become Arial and the file looks almost right. The install recipe and the way to verify it (render the same string as Space Grotesk and as Arial, hash both, identical means the font is being ignored) is in the header of `banners/generate.cjs`. It is per machine, so a second machine or a cloud session needs it too.
