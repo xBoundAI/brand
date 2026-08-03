@@ -6,10 +6,26 @@
  * convenience.
  *
  * Type note that matters: the wordmark and the xB monogram are Space Grotesk
- * 700. That font is NOT installed on this machine, so anything that rasterizes
- * these locally (sharp, librsvg) will silently substitute Arial. This is the
- * same trap recorded in the app changelog for the header mark. Render in a
- * browser, or install the font, before exporting a PNG you intend to publish.
+ * 700. If that font is missing, sharp and librsvg silently substitute Arial and
+ * the PNG looks almost right, which is the same trap the app changelog records
+ * for the header mark. It is per machine, so a second machine or a cloud session
+ * will hit it even though this one no longer does.
+ *
+ * Install it for the current user, no admin needed, then verify rather than
+ * assume:
+ *
+ *   $css  = (iwr "https://fonts.googleapis.com/css?family=Space+Grotesk:700" `
+ *             -UserAgent "Wget/1.21" -UseBasicParsing).Content
+ *   $url  = [regex]::Match($css, "https://[^)]+\.ttf").Value
+ *   $dest = "$env:LOCALAPPDATA\Microsoft\Windows\Fonts\SpaceGrotesk-Bold.ttf"
+ *   iwr $url -OutFile $dest -UseBasicParsing
+ *   New-ItemProperty -Path "HKCU:\Software\Microsoft\Windows NT\CurrentVersion\Fonts" `
+ *     -Name "Space Grotesk Bold (TrueType)" -Value $dest -PropertyType String -Force
+ *
+ * The css2 endpoint returns woff2 and will not work; the v1 css endpoint above
+ * returns a real ttf. Verify by rendering the same string twice, once with
+ * font-family Space Grotesk and once with Arial, and hashing both PNGs. Same
+ * hash means the font is not being used, whatever the install said.
  *
  * LinkedIn crops: the profile avatar overlaps the lower left, so nothing that
  * has to survive sits left of x=420 or below y=200 on that side. The
