@@ -34,3 +34,18 @@ Typeface: Space Grotesk 700 (matches the wordmark).
 
 - The 16px favicon should be a solid-tile version, not a glow — blooms disappear at tab scale.
 - The gold "one thing that needs you" accent is a *state*, expressed in-app as animation, and is deliberately not part of the static mark. The identity stays calm.
+
+## Repo notes
+
+**History on `main` was rewritten once, on 2026-07-31.** The standing rule in the app and site repos is to never rewrite pushed history, and it was overridden here deliberately rather than casually, so a future session seeing a forced update in the log does not read that rule as soft.
+
+What happened: this repo was cloned fresh onto a machine with no global git identity, so git fell back to `username@hostname` and published a commit authored by a work email onto a public repo. An author field cannot be fixed forward, which is the one thing the rule has no answer for. The rewrite was safe here for reasons that are not true of the other repos: one branch, no tags, the commit was twenty minutes old, and there was exactly one working copy in existence.
+
+Two things came out of it worth keeping:
+
+- **The global git identity is now set**, which is where the bug actually lived. Every repo here had a per-repo identity, so only a brand new clone could hit it.
+- **A force push unlinks a commit, it does not delete it.** The old SHA stayed fetchable from GitHub afterward. On a public repo, purging it takes a support request. Assume anything pushed is public permanently and fix the cause instead.
+
+## Rasterizing
+
+SVG is the master. If you export PNGs, install Space Grotesk first or the wordmark and the `xB` monogram both silently become Arial and the file looks almost right. The install recipe and the way to verify it (render the same string as Space Grotesk and as Arial, hash both, identical means the font is being ignored) is in the header of `banners/generate.cjs`. It is per machine, so a second machine or a cloud session needs it too.
