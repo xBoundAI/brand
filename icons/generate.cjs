@@ -52,7 +52,12 @@ const { execFileSync } = require('child_process');
 const FONT = 'Space Grotesk, Arial, sans-serif';
 const TEAL = '#2DD4BF'; // brand accent, the recogniser
 const INK = '#0B3B35'; // brand light-mode letter colour, knocked out of the tile
-const DEEP = '#0E5346'; // brand light-mode network colour
+// The two surfaces answer different questions, so they use different grounds.
+// Tab chip: teal tile, INK monogram (see the v4 note above).
+// Touch icon: the app's own dark-mode values, so the home screen and the header
+// are the same mark rather than two cousins.
+const DARK = '#071a1e'; // --bg, the board's background token
+const LIGHT = '#EAF4F2'; // the monogram colour the header uses on dark
 
 /** Monogram knocked out of a solid tile. Every tab size uses this. */
 function chip(px) {
@@ -65,21 +70,45 @@ function chip(px) {
 }
 
 /**
- * Touch icon. Full mark on the same teal ground, dark-green network so it does
- * not vanish into the tile. Opaque because it sits on a home screen at 180px,
- * where the whole mark resolves and iOS would composite a transparent one
- * unpredictably.
+ * Touch icon. DARK ground, teal network, light monogram: the same mark the app
+ * itself draws in its header, not the tab chip scaled up.
+ *
+ * WHY THIS DIVERGED FROM THE TAB ICON, 2026-08-09. The v4 note above is sound
+ * and it is about ONE surface: a 16px favicon on a browser tab strip, where a
+ * solid teal tile beats every transparent option on both light and dark. That
+ * test was never run against an iOS home screen, which is a different problem
+ * entirely: 180px instead of 16, the user's wallpaper instead of a grey strip,
+ * and neighbours like ClickUp, Notion and Slack that are mostly white grounds. A
+ * flat mint square among them reads as an unfinished placeholder rather than as
+ * a brand, which is what CPU-0 reacted to.
+ *
+ * So the two surfaces now answer their own questions. The tab keeps the teal
+ * tile. The home screen gets the real mark, and it matches what somebody sees
+ * the moment they open the app, which is the only continuity that actually
+ * matters at this size.
+ *
+ * Colours are the app's own dark-mode values, not new ones: #071a1e is the board
+ * background token, #2DD4BF the network, #EAF4F2 the monogram. Geometry is
+ * copied from the header mark so the two cannot drift into being cousins.
+ *
+ * Still opaque. iOS composites a transparent touch icon unpredictably and will
+ * happily put it on white.
  */
 function touchIcon(px) {
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${px}" height="${px}" viewBox="6 6 88 88">
-  <rect x="6" y="6" width="88" height="88" fill="${TEAL}"/>
-  <g fill="${DEEP}">
+  <rect x="6" y="6" width="88" height="88" fill="${DARK}"/>
+  <g fill="${TEAL}">
     <circle cx="50" cy="12" r="4.5"/><circle cx="83" cy="31" r="4.5"/><circle cx="83" cy="69" r="4.5"/>
     <circle cx="50" cy="88" r="4.5"/><circle cx="17" cy="69" r="4.5"/><circle cx="17" cy="31" r="4.5"/>
   </g>
-  <path d="M50,12 L83,31 L83,69 L50,88 L17,69 L17,31 Z" fill="none" stroke="${DEEP}" stroke-width="1.6" stroke-opacity="0.55"/>
+  <path d="M50,12 L83,31 L83,69 L50,88 L17,69 L17,31 Z" fill="none" stroke="${TEAL}" stroke-width="1.4" stroke-opacity="0.4"/>
+  <g fill="none" stroke="${TEAL}" stroke-width="2" stroke-opacity="0.7">
+    <line x1="50" y1="12" x2="50" y2="34"/><line x1="83" y1="31" x2="64" y2="42"/>
+    <line x1="83" y1="69" x2="64" y2="58"/><line x1="50" y1="88" x2="50" y2="66"/>
+    <line x1="17" y1="69" x2="36" y2="58"/><line x1="17" y1="31" x2="36" y2="42"/>
+  </g>
   <text x="50" y="51" font-family="${FONT}" font-weight="700" font-size="27"
-        fill="${INK}" text-anchor="middle" dominant-baseline="central" letter-spacing="-1.5">xB</text>
+        fill="${LIGHT}" text-anchor="middle" dominant-baseline="central" letter-spacing="-1.5">xB</text>
 </svg>
 `;
 }
