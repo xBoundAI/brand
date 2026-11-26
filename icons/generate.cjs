@@ -154,13 +154,21 @@ function touchIcon(px) {
  * versions by looking at all three in his own folders at 56px; the rejected
  * chassis are kept in alternates/ rather than deleted.
  *
- * THREE LOCKUPS, because one artwork cannot do every surface. This is the same
+ * FOUR LOCKUPS, because one artwork cannot do every surface. This is the same
  * lesson as the v1 note above, arrived at again from the other end:
  *
  *   primary   accent ring on DARK. 48px and up. Home screen, app, docs.
  *   inverse   same artwork, accent ground. Dark backgrounds, and the swap for
  *             a folder of black tiles where a near-black icon disappears.
- *   micro     accent ground, NO ring, glyph redrawn heavy. 32px and down.
+ *   knockout  accent ground, NO ring, standard glyph. The colour chip: a
+ *             sticker, an avatar, a light page, anywhere the tile has to be
+ *             the thing you recognise before you read anything.
+ *   micro     the same knockout geometry with the glyph REDRAWN heavy, for
+ *             32px and down. Not a separate idea, the small-size form of it.
+ *
+ * knockout needs no maskable variant. Dropping the ring puts every glyph
+ * inside 110px of centre, and Android's safe zone is a circle of radius
+ * 204.8px, so nothing can clip. Only primary has to be pulled in.
  *
  * micro is a redraw and not a scale-down, and the reason is measured: rendered
  * at 16px and blown up nearest-neighbour, the ring version loses all three
@@ -233,6 +241,9 @@ function productMark(glyph, lockup, px, scale = 1) {
   if (lockup === 'inverse') {
     bg = ACCENT;
     art = `${nodeRing(INK, '.8')}\n${GLYPH[glyph](INK, ACCENT)}`;
+  } else if (lockup === 'knockout') {
+    bg = ACCENT;
+    art = `  <g transform="translate(256 256) scale(1.02) translate(-256 -256)">\n${GLYPH[glyph](INK, ACCENT)}\n  </g>`;
   } else if (lockup === 'micro') {
     bg = ACCENT;
     art = MICRO[glyph](INK, ACCENT);
@@ -319,18 +330,22 @@ const writeSvg = (rel, markup) => {
 for (const p of PRODUCTS) {
   writeSvg(`products/${p.name}.svg`, productMark(p.glyph, 'primary', 512));
   writeSvg(`products/${p.name}-inverse.svg`, productMark(p.glyph, 'inverse', 512));
+  writeSvg(`products/${p.name}-knockout.svg`, productMark(p.glyph, 'knockout', 512));
   writeSvg(`products/${p.name}-micro.svg`, productMark(p.glyph, 'micro', 512));
   render(`products/${p.name}-180`, productMark(p.glyph, 'primary', 180), 180);
   render(`products/${p.name}-512`, productMark(p.glyph, 'primary', 512), 512);
   render(`products/${p.name}-512-maskable`, productMark(p.glyph, 'primary', 512, 0.9), 512);
   render(`products/${p.name}-inverse-180`, productMark(p.glyph, 'inverse', 180), 180);
+  render(`products/${p.name}-inverse-512`, productMark(p.glyph, 'inverse', 512), 512);
+  render(`products/${p.name}-knockout-180`, productMark(p.glyph, 'knockout', 180), 180);
+  render(`products/${p.name}-knockout-512`, productMark(p.glyph, 'knockout', 512), 512);
   render(`products/${p.name}-micro-32`, productMark(p.glyph, 'micro', 32), 32);
   render(`products/${p.name}-micro-16`, productMark(p.glyph, 'micro', 16), 16);
 }
 
 console.log('\nRejected chassis, kept for reference (SVG only):');
 for (const p of PRODUCTS) {
-  for (const chassis of ['framed', 'solid', 'knockout']) {
+  for (const chassis of ['framed', 'solid']) {
     writeSvg(`alternates/${p.name}-${chassis}.svg`, altMark(p.glyph, chassis));
   }
 }
