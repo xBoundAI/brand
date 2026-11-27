@@ -331,6 +331,19 @@ render('apple-touch-icon', touchIcon(180), 180);
 fs.writeFileSync(path.join(out, 'favicon.svg'), chip(100), 'utf8');
 console.log('  icons/favicon.svg');
 
+/* THE PRIMARY MARK AT USABLE SIZES, added 2026-11-27. Until CPU-0 asked for
+ * "the actual xbound logo" there was no vector master and nothing larger than
+ * the 180px touch icon, so anyone wanting the logo for a deck, a banner or a
+ * print had to upscale a home-screen asset. That was a real gap and this is
+ * the fix: same touchIcon() geometry, no new artwork, three more outputs.
+ *
+ * CAVEAT ON THE SVG: the "xB" is live <text>, not outlined paths, so it
+ * reflows in any editor that does not have the font. Hand out the PNGs. */
+fs.writeFileSync(path.join(out, 'xbound-mark.svg'), touchIcon(512), 'utf8');
+console.log('  icons/xbound-mark.svg');
+render('xbound-mark-512', touchIcon(512), 512);
+render('xbound-mark-1024', touchIcon(1024), 1024);
+
 console.log('\nProduct marks:');
 const writeSvg = (rel, markup) => {
   const p = path.join(out, rel);
