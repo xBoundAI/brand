@@ -143,10 +143,20 @@ function touchIcon(px) {
  * PRODUCT MARKS, 2026-11-26. CPU-0: "each logo has same color maybe just
  * different logo."
  *
- * runsheet, papertape and watchfloor are three routes of one app, and on a
+ * runsheet, papertape and orrery are three routes of one app, and on a
  * home screen they were three identical xB tiles in three different folders,
  * renamed by hand. One colourway, one chassis, and the glyph is the only thing
- * that differs: stack, punch, watch.
+ * that differs: stack, punch, orbit.
+ *
+ * RENAMED 2026-11-27. The third surface was `watchfloor` when these marks were
+ * cut. CPU-0 chose `orrery`, reversing his own 11-22 call. THE ARTWORK DID NOT
+ * CHANGE: he picked the ring glyph on looks alone on 11-26, and a ring with a
+ * body on it is an orbit, so the mark reads better under the new name than the
+ * old one. Only the name and the glyph key moved (`watch` -> `orbit`). The full
+ * reasoning, including the two candidates he turned down, is in
+ * xbound/docs/strategy/cornerstone/cpu4-naming.md under DECIDED 2026-11-27.
+ * THE COLOUR IS UNCHANGED and is not ours to move: his 11-21 decision that each
+ * surface lights in its own colour stands until he says otherwise.
  *
  * CHASSIS. Six nodes in a ring, no hexagon frame and no spokes. The frame and
  * spokes are four layers where every neighbouring app icon has one, and they
@@ -210,9 +220,10 @@ const GLYPH = {
   punch: (ink, v) =>
     `  <rect x="140" y="214" width="232" height="84" rx="12" fill="${ink}"/>\n` +
     [183, 229, 275, 321].map((x) => `  <circle cx="${x}" cy="256" r="18" fill="${v}"/>`).join('\n'),
-  // Marker off the vertical axis: at 12 o'clock it stacked under the top node
-  // and the three circles merged into one blob.
-  watch: (ink) =>
+  // A body on a ring, which is what an orrery is. Marker off the vertical axis
+  // because at 12 o'clock it stacked under the top node and the three circles
+  // merged into one blob.
+  orbit: (ink) =>
     `  <circle cx="256" cy="256" r="78" fill="none" stroke="${ink}" stroke-width="30" opacity=".42"/>\n` +
     `  <circle cx="306" cy="196" r="30" fill="${ink}"/>`,
 };
@@ -226,7 +237,7 @@ const MICRO = {
   punch: (ink, v) =>
     `  <rect x="86" y="196" width="340" height="120" rx="16" fill="${ink}"/>\n` +
     [166, 256, 346].map((x) => `  <circle cx="${x}" cy="256" r="32" fill="${v}"/>`).join('\n'),
-  watch: (ink) =>
+  orbit: (ink) =>
     `  <circle cx="240" cy="272" r="116" fill="none" stroke="${ink}" stroke-width="58"/>\n` +
     `  <circle cx="352" cy="150" r="62" fill="${ink}"/>`,
 };
@@ -294,7 +305,7 @@ ${body}
 const PRODUCTS = [
   { name: 'runsheet', glyph: 'stack' },
   { name: 'papertape', glyph: 'punch' },
-  { name: 'watchfloor', glyph: 'watch' },
+  { name: 'orrery', glyph: 'orbit' },
 ];
 
 const out = __dirname;
@@ -355,7 +366,11 @@ fs.rmSync(tmp, { recursive: true, force: true });
 console.log('\nConsumers pull the top-level five with `npm run icons`:');
 console.log('  C:\\dev\\xbound-site   ->  public/');
 console.log('  C:\\dev\\xbound        ->  public/');
-console.log('\nproducts/ is NOT synced yet. runsheet, papertape and watchfloor are');
+console.log('\nproducts/ is NOT synced yet. runsheet, papertape and orrery are');
 console.log('three routes of one SPA on one origin, so one index.html means one');
 console.log('apple-touch-icon for all three. Serving a different icon per route is');
 console.log('an app change, not an asset change. See PRODUCT MARKS above.');
+console.log('\nCPU-2 is building that app change under ClickUp 868mygtte: one HTML');
+console.log('entry per surface, three rewrites above the catch-all, and a manifest');
+console.log('each on scope "/" so the in-app toggle stays inside the installed app.');
+console.log('CPU-0 2026-11-27: the LOGIN fix lands first, the three tiles second.');
